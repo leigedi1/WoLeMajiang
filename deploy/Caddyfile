@@ -1,0 +1,47 @@
+# 生产 Caddy 配置（阿里云，服务器 IP 见本地 deploy/deploy-local.md，不入库）
+#
+# 拓扑: Caddy 跑在 Docker 容器 `caddy` 里（network_mode: host），
+#       host 的 /opt/caddy/Caddyfile bind-mount 到容器 /etc/caddy/Caddyfile；
+#       host 上没有 caddy 可执行文件，改动后这样生效:
+#         docker exec caddy caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile
+#         docker exec caddy caddy reload   --config /etc/caddy/Caddyfile --adapter caddyfile
+#       （或热加载 admin API: POST http://127.0.0.1:2019/load，Content-Type: text/caddyfile）
+#
+# 域名分工:
+#   mj.wole110.xyz      —— 我嘞麻将（根路径直出 SPA + /api + /ws + /ws/signal）
+#   tsapi.wole110.xyz   —— 听书项目专用（/apk/* 静态 + 旧 /mj/* 301 到新域名）
+#   op.wole110.xyz      —— openlist 面板
+
+# 我嘞麻将: 独立二级域名, 根路径直接提供 SPA 静态资源 + /api + /ws(后端单进程 8790)
+mj.wole110.xyz {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8790
+}
+
+tsapi.wole110.xyz {
+	handle /apk/* {
+		root * /data
+		file_server
+	}
+
+	# 我嘞麻将已迁到 https://mj.wole110.xyz/; 旧 /mj/ 链接去掉前缀后 301 过去。
+	# 必须用 handle_path(先剥前缀), 因为 redir 的 {uri} 在 uri strip_prefix 之前求值。
+	handle_path /mj/* {
+		redir https://mj.wole110.xyz{uri} 301
+	}
+	redir /mj https://mj.wole110.xyz/ 301
+
+	handle {
+		reverse_proxy <内网IP>:8002
+	}
+}
+
+op.wole110.xyz {
+	@switch path /api/public-switch/*
+	handle @switch {
+		reverse_proxy <内网IP>:5247
+	}
+	handle {
+		reverse_proxy 127.0.0.1:5245
+	}
+}

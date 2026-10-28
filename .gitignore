@@ -1,0 +1,39 @@
+node_modules/
+dist/
+coverage/
+
+# runtime data
+server/data/
+server/temp-*
+*.db
+*.db-wal
+*.db-shm
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Go build artifacts
+server/majiang-server
+server/majiang-server.exe
+server/majiang-server-stress.exe
+server/stress.exe
+server/stress
+majiang-server-linux
+*-linux
+*.exe~
+server/majiang-server-e2e.exe
+
+*.tsbuildinfo
+
+# single-player engine WASM output (pnpm run engine)
+web/public/engine/
+*~
+**/*.tmpdir/
+web/.package.json.*.tmpdir/
+*.tsbuildinfo
+
+# local-only deploy info (server IP / SSH key path) — never commit
+deploy/deploy-local.md

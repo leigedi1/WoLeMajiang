@@ -1,0 +1,21 @@
+{
+  "http": {
+    "listen": "127.0.0.1:8080",
+    "allowed_origins": [
+      "http://localhost:5173",
+      "http://127.0.0.1:5173"
+    ]
+  },
+  "database": { "path": "data/majiang.db" },
+  "rooms": {
+    "max_online": 3,
+    "idle_ttl_seconds": 900,
+    "sweep_interval_seconds": 60
+  },
+  "limits": {
+    "max_message_bytes": 65536,
+    "message_burst": 30,
+    "messages_per_second": 10
+  },
+  "log": { "level": "info" }
+}

@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+/* 主题令牌将在阶段3(牌桌与双主题)细化; 此处仅保留基础样式。 */
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  @apply bg-stone-100 text-stone-900 antialiased;
+}

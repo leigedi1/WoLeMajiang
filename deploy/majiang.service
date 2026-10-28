@@ -1,0 +1,24 @@
+[Unit]
+Description=WoleMajiang online server (Go, HTTP+WebSocket)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/majiang
+Environment=MAJIANG_HTTP_LISTEN=127.0.0.1:8790
+Environment=MAJIANG_DB_PATH=/opt/majiang/data/majiang.db
+Environment=MAJIANG_ALLOWED_ORIGINS=https://mj.wole110.xyz,https://tsapi.wole110.xyz
+Environment=MAJIANG_MAX_ONLINE_ROOMS=300
+Environment=MAJIANG_LOG_LEVEL=info
+Environment=MAJIANG_WEB_ROOT=/opt/majiang/dist
+Environment=MAJIANG_DIY_DIR=/opt/majiang/data/diy
+# MAJIANG_DIY_PASSWORD 不入库：首次启动前在本机副本填写此行，或部署后走设置页「🔑 修改密码」
+ExecStart=/opt/majiang/majiang-server
+Restart=always
+RestartSec=2
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target
